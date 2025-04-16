@@ -1,0 +1,4 @@
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32mUser authenticated\u001b[39m","roles":["USER"],"siteId":"site1","timestamp":"2025-04-15 23:54:02:542","userId":"123"}
+{"allowedRoles":["USER"],"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32mUser authorized\u001b[39m","roles":["USER"],"timestamp":"2025-04-15 23:54:02:542","userId":"123"}
+{"level":"\u001b[33mwarn\u001b[39m","message":"\u001b[33mUnauthorized access attempt\u001b[39m","requiredRoles":["ADMIN"],"timestamp":"2025-04-15 23:54:02:542","userId":"123","userRoles":["USER"]}
+{"level":"\u001b[33mwarn\u001b[39m","message":"\u001b[33mSite access denied\u001b[39m","requestedSiteId":"different-site","timestamp":"2025-04-15 23:54:02:542","userId":"123","userSiteId":"site1"}
