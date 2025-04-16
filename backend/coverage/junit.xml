@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="7" failures="7" errors="0" time="0.833">
+  <testsuite name="Auth Middleware" errors="0" failures="7" skipped="0" timestamp="2025-04-15T23:50:53" time="0.785" tests="7">
+    <testcase classname="Auth Middleware › authenticate" name="should return 401 when no token is provided" time="0.026">
+      <failure>TypeError: connection.query is not a function
+    at Object.&lt;anonymous&gt; (/project/sandbox/user-workspace/backend/src/test/setupAfterEnv.ts:59:29)
+    at Promise.then.completed (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:246:5)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at run (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    </testcase>
+    <testcase classname="Auth Middleware › authenticate" name="should authenticate user with valid token" time="0.004">
+      <failure>TypeError: connection.query is not a function
+    at Object.&lt;anonymous&gt; (/project/sandbox/user-workspace/backend/src/test/setupAfterEnv.ts:59:29)
+    at Promise.then.completed (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:246:5)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at run (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    </testcase>
+    <testcase classname="Auth Middleware › authorize" name="should allow access with correct role" time="0.003">
+      <failure>TypeError: connection.query is not a function
+    at Object.&lt;anonymous&gt; (/project/sandbox/user-workspace/backend/src/test/setupAfterEnv.ts:59:29)
+    at Promise.then.completed (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:246:5)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at run (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    </testcase>
+    <testcase classname="Auth Middleware › authorize" name="should deny access with incorrect role" time="0.004">
+      <failure>TypeError: connection.query is not a function
+    at Object.&lt;anonymous&gt; (/project/sandbox/user-workspace/backend/src/test/setupAfterEnv.ts:59:29)
+    at Promise.then.completed (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:246:5)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at run (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    </testcase>
+    <testcase classname="Auth Middleware › checkSiteAccess" name="should allow access to own site" time="0.003">
+      <failure>TypeError: connection.query is not a function
+    at Object.&lt;anonymous&gt; (/project/sandbox/user-workspace/backend/src/test/setupAfterEnv.ts:59:29)
+    at Promise.then.completed (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:246:5)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at run (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    </testcase>
+    <testcase classname="Auth Middleware › checkSiteAccess" name="should deny access to different site" time="0.006">
+      <failure>TypeError: connection.query is not a function
+    at Object.&lt;anonymous&gt; (/project/sandbox/user-workspace/backend/src/test/setupAfterEnv.ts:59:29)
+    at Promise.then.completed (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:246:5)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at run (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    </testcase>
+    <testcase classname="Auth Middleware › checkSiteAccess" name="should allow admin access to any site" time="0.014">
+      <failure>TypeError: connection.query is not a function
+    at Object.&lt;anonymous&gt; (/project/sandbox/user-workspace/backend/src/test/setupAfterEnv.ts:59:29)
+    at Promise.then.completed (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:246:5)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:121:9)
+    at run (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    </testcase>
+    <testcase classname="" name="Test execution failure: could be caused by test hooks like &apos;afterAll&apos;." time="0">
+      <failure>{&quot;message&quot;:&quot;&quot;,&quot;stack&quot;:&quot;TypeError: connection.close is not a function\n    at Object.&lt;anonymous&gt; (/project/sandbox/user-workspace/backend/src/test/setupAfterEnv.ts:51:22)\n    at Promise.then.completed (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:298:28)\n    at new Promise (&lt;anonymous&gt;)\n    at callAsyncCircusFn (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/utils.js:231:10)\n    at _callCircusHook (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at _runTestsForDescribeBlock (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:154:7)\n    at run (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/run.js:71:3)\n    at runAndTransformResultsToJestFormat (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at jestAdapter (/project/sandbox/user-workspace/backend/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at runTestInternal (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:367:16)\n    at runTest (/project/sandbox/user-workspace/backend/node_modules/jest-runner/build/runTest.js:444:34)&quot;}</failure>
+    </testcase>
+  </testsuite>
+</testsuites>
