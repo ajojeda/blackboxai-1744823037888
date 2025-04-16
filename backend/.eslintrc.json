@@ -1,0 +1,59 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "env": {
+    "node": true,
+    "es6": true,
+    "jest": true
+  },
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": ["error", {
+      "allowExpressions": true,
+      "allowTypedFunctionExpressions": true
+    }],
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": ["error", {
+      "argsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_"
+    }],
+    "@typescript-eslint/no-non-null-assertion": "warn",
+    "no-console": ["error", {
+      "allow": ["warn", "error"]
+    }],
+    "quotes": ["error", "single"],
+    "semi": ["error", "always"],
+    "indent": ["error", 2],
+    "comma-dangle": ["error", "always-multiline"],
+    "object-curly-spacing": ["error", "always"],
+    "arrow-parens": ["error", "always"],
+    "no-multiple-empty-lines": ["error", {
+      "max": 1,
+      "maxEOF": 0
+    }],
+    "eol-last": ["error", "always"],
+    "max-len": ["error", {
+      "code": 100,
+      "ignoreComments": true,
+      "ignoreStrings": true,
+      "ignoreTemplateLiterals": true,
+      "ignoreRegExpLiterals": true
+    }]
+  },
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    "coverage"
+  ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  }
+}
