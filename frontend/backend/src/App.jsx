@@ -1,82 +1,105 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Layout from './components/Layout/Layout';
-import PrivateRoute from './components/Auth/PrivateRoute';
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faSignOutAlt, faTachometerAlt, faTicketAlt, faUsersCog, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
+import { useState, useEffect } from 'react'
 
-// Lazy load components for better performance
-const Login = React.lazy(() => import('./pages/Auth/Login'));
-const Dashboard = React.lazy(() => import('./pages/Dashboard/Dashboard'));
-const WarehouseManagement = React.lazy(() => import('./pages/ERP/WarehouseManagement'));
-const ContractManagement = React.lazy(() => import('./pages/ERP/ContractManagement'));
-const UserManagement = React.lazy(() => import('./pages/Users/UserManagement'));
-const RoleManagement = React.lazy(() => import('./pages/Users/RoleManagement'));
-const Settings = React.lazy(() => import('./pages/Settings/Settings'));
+function App() {
+  const [user, setUser] = useState(null);
 
-// Loading component for lazy-loaded routes
-const LoadingFallback = () => (
-    <div className="loading-fallback">
-        <div className="spinner"></div>
-        <p>Loading...</p>
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login.html';
+  };
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-100">
+      {/* Top Navigation */}
+      <nav className="bg-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <h1 className="text-2xl font-bold text-gray-900">GoodieRun 2.0</h1>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faUser} className="h-5 w-5 text-gray-500" />
+                <span className="ml-2 text-gray-600">{user.firstName} {user.lastName}</span>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center text-gray-600 hover:text-red-500"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} className="h-5 w-5" />
+                <span className="ml-2">Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-64 bg-white shadow-lg h-screen">
+          <nav className="mt-5 px-2">
+            <a href="/dashboard" className="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+              <FontAwesomeIcon icon={faTachometerAlt} className="mr-3 h-5 w-5" />
+              Dashboard
+            </a>
+            <a href="/tickets" className="mt-1 group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+              <FontAwesomeIcon icon={faTicketAlt} className="mr-3 h-5 w-5" />
+              Tickets
+            </a>
+            <a href="/attendance" className="mt-1 group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+              <FontAwesomeIcon icon={faCalendarAlt} className="mr-3 h-5 w-5" />
+              Attendance
+            </a>
+            {user.isTopLevelAdmin && (
+              <a href="/admin" className="mt-1 group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+                <FontAwesomeIcon icon={faUsersCog} className="mr-3 h-5 w-5" />
+                Admin
+              </a>
+            )}
+          </nav>
+        </div>
+
+        {/* Main Content */}
+        <main className="flex-1 p-8">
+          <Routes>
+            <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/tickets" element={<PrivateRoute><Tickets /></PrivateRoute>} />
+            <Route path="/attendance" element={<PrivateRoute><Attendance /></PrivateRoute>} />
+            <Route path="/admin" element={<PrivateRoute><Admin /></PrivateRoute>} />
+=======
+            <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/tickets" element={<PrivateRoute><Tickets /></PrivateRoute>} />
+            <Route path="/attendance" element={<PrivateRoute><Attendance /></PrivateRoute>} />
+            <Route path="/admin" element={<PrivateRoute><Admin /></PrivateRoute>} />
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-900 mb-4">Dashboard</h2>
+                <div className="bg-white shadow rounded-lg p-6">
+                  <p className="text-gray-600">Welcome to your dashboard, {user.firstName}!</p>
+                </div>
+              </div>
+            } />
+          </Routes>
+        </main>
+      </div>
     </div>
-);
+  )
+}
 
-const App = () => {
-    return (
-        <Router>
-            <React.Suspense fallback={<LoadingFallback />}>
-                <Routes>
-                    {/* Public routes */}
-                    <Route path="/login" element={<Login />} />
-                    
-                    {/* Redirect root to login if not authenticated */}
-                    <Route path="/" element={<Navigate to="/login" replace />} />
-                    
-                    {/* Protected backend routes */}
-                    <Route
-                        path="/backend"
-                        element={
-                            <PrivateRoute>
-                                <Layout />
-                            </PrivateRoute>
-                        }
-                    >
-                        <Route path="dashboard" element={<Dashboard />} />
-                        
-                        {/* ERP Routes */}
-                        <Route path="erp">
-                            <Route path="warehouse" element={<WarehouseManagement />} />
-                            <Route path="warehouse/create" element={<WarehouseManagement mode="create" />} />
-                            <Route path="warehouse/list" element={<WarehouseManagement mode="list" />} />
-                            
-                            <Route path="contracts" element={<ContractManagement />} />
-                            <Route path="contracts/create" element={<ContractManagement mode="create" />} />
-                            <Route path="contracts/list" element={<ContractManagement mode="list" />} />
-                        </Route>
-                        
-                        {/* User Management Routes */}
-                        <Route path="users">
-                            <Route index element={<UserManagement />} />
-                            <Route path="create" element={<UserManagement mode="create" />} />
-                            <Route path="list" element={<UserManagement mode="list" />} />
-                        </Route>
-                        
-                        {/* Role Management Routes */}
-                        <Route path="roles">
-                            <Route index element={<RoleManagement />} />
-                            <Route path="create" element={<RoleManagement mode="create" />} />
-                            <Route path="list" element={<RoleManagement mode="list" />} />
-                        </Route>
-                        
-                        {/* Settings Route */}
-                        <Route path="settings" element={<Settings />} />
-                        
-                        {/* Catch all route - redirect to dashboard */}
-                        <Route path="*" element={<Navigate to="/backend/dashboard" replace />} />
-                    </Route>
-                </Routes>
-            </React.Suspense>
-        </Router>
-    );
-};
-
-export default App;
+export default App
