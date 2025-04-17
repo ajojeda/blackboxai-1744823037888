@@ -14,6 +14,9 @@ module.exports = {
           'gray-accent': '#636466', // Accent Grey
         }
       },
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+      },
       animation: {
         'slide-right': 'slideRight 0.3s ease-in-out',
         'slide-left': 'slideLeft 0.3s ease-in-out',
