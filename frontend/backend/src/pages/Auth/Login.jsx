@@ -1,117 +1,52 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 
-const Login = () => {
-    const [credentials, setCredentials] = useState({
-        username: '',
-        password: ''
-    });
-    const navigate = useNavigate();
-    const location = useLocation();
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // In a real app, this would make an API call
-        localStorage.setItem('token', 'demo-token');
-        localStorage.setItem('user', JSON.stringify({
-            firstName: 'Demo',
-            lastName: 'User',
-            isTopLevelAdmin: true,
-            permissions: ['*']
-        }));
-        
-        // Redirect to the page they were trying to access, or dashboard as default
-        const from = location.state?.from?.pathname || '/backend/dashboard';
-        navigate(from, { replace: true });
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Simulate authentication
+    if (email === 'user@example.com' && password === 'password') {
+      localStorage.setItem('user', JSON.stringify({ firstName: 'John', lastName: 'Doe', isTopLevelAdmin: true }));
+      window.location.href = '/';
+    } else {
+      setError('Invalid credentials');
+    }
+  };
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-goodierun-primary to-goodierun-secondary flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <h1 className="text-center text-4xl font-extrabold text-white mb-2">
-                    GoodieRun
-                </h1>
-                <h2 className="text-center text-xl font-semibold text-white/80">
-                    Backend Dashboard
-                </h2>
-            </div>
-
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow-xl rounded-lg sm:px-10">
-                    <form className="space-y-6" onSubmit={handleSubmit}>
-                        <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-goodierun-gray">
-                                Username
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="username"
-                                    name="username"
-                                    type="text"
-                                    required
-                                    autoComplete="username"
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-goodierun-primary focus:border-goodierun-primary"
-                                    value={credentials.username}
-                                    onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-goodierun-gray">
-                                Password
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    required
-                                    autoComplete="current-password"
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-goodierun-primary focus:border-goodierun-primary"
-                                    value={credentials.password}
-                                    onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <input
-                                    id="remember-me"
-                                    name="remember-me"
-                                    type="checkbox"
-                                    className="h-4 w-4 text-goodierun-primary focus:ring-goodierun-primary border-gray-300 rounded"
-                                />
-                                <label htmlFor="remember-me" className="ml-2 block text-sm text-goodierun-gray">
-                                    Remember me
-                                </label>
-                            </div>
-
-                            <div className="text-sm">
-                                <button 
-                                    type="button"
-                                    className="font-medium text-goodierun-primary hover:text-goodierun-secondary"
-                                    onClick={() => alert('Password reset functionality coming soon!')}
-                                >
-                                    Forgot your password?
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <button
-                                type="submit"
-                                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-goodierun-primary hover:bg-goodierun-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-goodierun-primary transition-colors duration-200"
-                            >
-                                Sign in
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md">
+        <h2 className="text-2xl mb-4">Login</h2>
+        {error && <p className="text-red-500">{error}</p>}
+        <div className="mb-4">
+          <label className="block text-gray-700">Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="border rounded w-full py-2 px-3"
+            required
+          />
         </div>
-    );
-};
+        <div className="mb-4">
+          <label className="block text-gray-700">Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="border rounded w-full py-2 px-3"
+            required
+          />
+        </div>
+        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
+          Login
+        </button>
+      </form>
+    </div>
+  );
+}
 
 export default Login;
