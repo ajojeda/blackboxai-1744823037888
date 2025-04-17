@@ -1,157 +1,158 @@
-import { connect, ConnectionPool } from 'mssql';
-import * as bcrypt from 'bcryptjs';
-import { dbConfig } from '../config/database';
+import sql from 'mssql';
+import bcrypt from 'bcryptjs';
+import Database from '../config/database';
+import logger from '../utils/logger';
 
 export interface IUser {
-  id: string;
-  username: string;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  roles: string[];
-  siteId: string;
-  isActive: boolean;
-}
-
-export class User {
-  private static async getConnection(): Promise<ConnectionPool> {
-    try {
-      return await connect(dbConfig);
-    } catch (error) {
-      throw new Error(`Database connection failed: ${error}`);
-    }
-  }
-
-  static async findByEmail(email: string): Promise<IUser | null> {
-    try {
-      const pool = await this.getConnection();
-      const result = await pool.request()
-        .input('email', email)
-        .query(`
-          SELECT 
-            u.Id,
-            u.Username,
-            u.Email,
-            u.FirstName,
-            u.LastName,
-            u.IsActive,
-            u.SiteId,
-            STRING_AGG(r.Name, ',') as Roles
-          FROM Users u
-          LEFT JOIN UserRoles ur ON u.Id = ur.UserId
-          LEFT JOIN Roles r ON ur.RoleId = r.Id
-          WHERE u.Email = @email
-          GROUP BY 
-            u.Id,
-            u.Username,
-            u.Email,
-            u.FirstName,
-            u.LastName,
-            u.IsActive,
-            u.SiteId
-        `);
-
-      if (result.recordset.length === 0) {
-        return null;
-      }
-
-      const user = result.recordset[0];
-      return {
-        id: user.Id,
-        username: user.Username,
-        email: user.Email,
-        firstName: user.FirstName,
-        lastName: user.LastName,
-        isActive: user.IsActive,
-        siteId: user.SiteId,
-        roles: user.Roles ? user.Roles.split(',') : []
-      };
-    } catch (error) {
-      throw new Error(`Error finding user: ${error}`);
-    }
-  }
-
-  static async validatePassword(email: string, password: string): Promise<boolean> {
-    try {
-      const pool = await this.getConnection();
-      const result = await pool.request()
-        .input('email', email)
-        .query('SELECT PasswordHash FROM Users WHERE Email = @email');
-
-      if (result.recordset.length === 0) {
-        return false;
-      }
-
-      const hash = result.recordset[0].PasswordHash;
-      return await bcrypt.compare(password, hash);
-    } catch (error) {
-      throw new Error(`Error validating password: ${error}`);
-    }
-  }
-
-  static async create(userData: {
+    id: string;
     username: string;
     email: string;
     password: string;
-    firstName?: string;
-    lastName?: string;
-    siteId: string;
+    firstName: string;
+    lastName: string;
     roles: string[];
-  }): Promise<IUser> {
-    try {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(userData.password, salt);
-
-      const pool = await this.getConnection();
-      const transaction = pool.transaction();
-      await transaction.begin();
-
-      try {
-        // Insert user
-        const userResult = await transaction.request()
-          .input('username', userData.username)
-          .input('email', userData.email)
-          .input('passwordHash', hashedPassword)
-          .input('firstName', userData.firstName)
-          .input('lastName', userData.lastName)
-          .input('siteId', userData.siteId)
-          .query(`
-            INSERT INTO Users (Username, Email, PasswordHash, FirstName, LastName, SiteId)
-            OUTPUT INSERTED.Id
-            VALUES (@username, @email, @passwordHash, @firstName, @lastName, @siteId)
-          `);
-
-        const userId = userResult.recordset[0].Id;
-
-        // Insert user roles
-        for (const roleName of userData.roles) {
-          await transaction.request()
-            .input('userId', userId)
-            .input('roleName', roleName)
-            .query(`
-              INSERT INTO UserRoles (UserId, RoleId)
-              SELECT @userId, Id FROM Roles WHERE Name = @roleName
-            `);
-        }
-
-        await transaction.commit();
-
-        return {
-          id: userId,
-          username: userData.username,
-          email: userData.email,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          roles: userData.roles,
-          siteId: userData.siteId,
-          isActive: true
-        };
-      } catch (error) {
-        await transaction.rollback();
-        throw error;
-      }
-    } catch (error) {
-      throw new Error(`Error creating user: ${error}`);
-    }
-  }
+    siteId: string;
+    departmentId: string;
+    isActive: boolean;
+    lastLogin: Date;
+    createdAt: Date;
+    updatedAt: Date;
 }
+
+export interface IUserCreate extends Omit<IUser, 'id' | 'createdAt' | 'updatedAt' | 'lastLogin'> {
+    password: string;
+}
+
+class User {
+    static tableName = 'Users';
+
+    static async findById(id: string): Promise<IUser | null> {
+        try {
+            const result = await Database.query<IUser>(
+                `SELECT * FROM ${this.tableName} WHERE id = @param0`,
+                [id]
+            );
+            return result[0] || null;
+        } catch (error) {
+            logger.error('Error finding user by ID:', error);
+            throw error;
+        }
+    }
+
+    static async findByEmail(email: string): Promise<IUser | null> {
+        try {
+            const result = await Database.query<IUser>(
+                `SELECT * FROM ${this.tableName} WHERE email = @param0`,
+                [email]
+            );
+            return result[0] || null;
+        } catch (error) {
+            logger.error('Error finding user by email:', error);
+            throw error;
+        }
+    }
+
+    static async findByUsername(username: string): Promise<IUser | null> {
+        try {
+            const result = await Database.query<IUser>(
+                `SELECT * FROM ${this.tableName} WHERE username = @param0`,
+                [username]
+            );
+            return result[0] || null;
+        } catch (error) {
+            logger.error('Error finding user by username:', error);
+            throw error;
+        }
+    }
+
+    static async create(userData: IUserCreate): Promise<IUser> {
+        try {
+            // Hash password
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(userData.password, salt);
+
+            const result = await Database.query<IUser>(
+                `INSERT INTO ${this.tableName} (
+                    username, email, password, firstName, lastName,
+                    roles, siteId, departmentId, isActive
+                ) VALUES (
+                    @param0, @param1, @param2, @param3, @param4,
+                    @param5, @param6, @param7, @param8
+                )
+                OUTPUT INSERTED.*`,
+                [
+                    userData.username,
+                    userData.email,
+                    hashedPassword,
+                    userData.firstName,
+                    userData.lastName,
+                    JSON.stringify(userData.roles),
+                    userData.siteId,
+                    userData.departmentId,
+                    userData.isActive
+                ]
+            );
+
+            return result[0];
+        } catch (error) {
+            logger.error('Error creating user:', error);
+            throw error;
+        }
+    }
+
+    static async updateLastLogin(id: string): Promise<void> {
+        try {
+            await Database.query(
+                `UPDATE ${this.tableName} 
+                SET lastLogin = GETDATE() 
+                WHERE id = @param0`,
+                [id]
+            );
+        } catch (error) {
+            logger.error('Error updating last login:', error);
+            throw error;
+        }
+    }
+
+    static async validatePassword(user: IUser, password: string): Promise<boolean> {
+        try {
+            return await bcrypt.compare(password, user.password);
+        } catch (error) {
+            logger.error('Error validating password:', error);
+            throw error;
+        }
+    }
+
+    static async getUserPermissions(userId: string): Promise<string[]> {
+        try {
+            const result = await Database.query<{ permissions: string }>(
+                `SELECT p.name as permissions
+                FROM UserPermissions up
+                JOIN Permissions p ON up.permissionId = p.id
+                WHERE up.userId = @param0`,
+                [userId]
+            );
+            return result.map(r => r.permissions);
+        } catch (error) {
+            logger.error('Error getting user permissions:', error);
+            throw error;
+        }
+    }
+
+    static async getUserWithRolesAndPermissions(userId: string): Promise<IUser & { permissions: string[] }> {
+        try {
+            const user = await this.findById(userId);
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            const permissions = await this.getUserPermissions(userId);
+            return { ...user, permissions };
+        } catch (error) {
+            logger.error('Error getting user with roles and permissions:', error);
+            throw error;
+        }
+    }
+}
+
+export default User;
