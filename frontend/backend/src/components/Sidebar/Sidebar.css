@@ -1,0 +1,238 @@
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    transition: width 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.expanded {
+    width: 250px;
+}
+
+.sidebar.collapsed {
+    width: 64px;
+}
+
+.toggle-button {
+    position: absolute;
+    right: -12px;
+    top: 20px;
+    width: 24px;
+    height: 24px;
+    background-color: #1a1a1a;
+    border: none;
+    border-radius: 50%;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-button:hover {
+    transform: scale(1.1);
+    background-color: #2a2a2a;
+}
+
+.sidebar-content {
+    padding: 1rem 0;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.nav-item-container {
+    position: relative;
+    margin: 0.25rem 0;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-item.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-left-color: #6366f1;
+}
+
+.nav-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 1rem;
+    color: #a0aec0;
+    transition: color 0.2s ease;
+}
+
+.nav-item:hover .nav-icon,
+.nav-item.active .nav-icon {
+    color: #ffffff;
+}
+
+.nav-label {
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.collapsed .nav-label {
+    opacity: 0;
+    width: 0;
+}
+
+.submenu {
+    background-color: #2a2a2a;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.submenu.expanded {
+    position: relative;
+}
+
+.collapsed .submenu {
+    position: absolute;
+    left: 100%;
+    top: 0;
+    width: 200px;
+    border-radius: 0 4px 4px 0;
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px);
+}
+
+.collapsed .nav-item-container:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.submenu-item {
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+}
+
+.submenu-link {
+    color: #a0aec0;
+    text-decoration: none;
+    display: block;
+    padding: 0.5rem;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    border-radius: 4px;
+}
+
+.submenu-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.submenu-link.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+.submenu-actions {
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-link {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    color: #a0aec0;
+    text-decoration: none;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+.action-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.action-link svg {
+    width: 14px;
+    height: 14px;
+    margin-right: 0.5rem;
+}
+
+/* Scrollbar styling */
+.sidebar-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: #4a4a4a;
+    border-radius: 2px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+    background: #5a5a5a;
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Apply animations */
+.nav-item-container {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.submenu {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar.expanded {
+        width: 200px;
+    }
+
+    .nav-item {
+        padding: 0.625rem 0.875rem;
+    }
+
+    .nav-icon {
+        margin-right: 0.75rem;
+    }
+
+    .submenu-item {
+        padding: 0.375rem 0.75rem 0.375rem 2rem;
+    }
+}
