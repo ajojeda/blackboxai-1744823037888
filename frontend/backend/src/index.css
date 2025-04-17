@@ -24,7 +24,7 @@
   }
 
   .spinner {
-    @apply w-10 h-10 border-3 border-gray-200 border-t-goodierun-primary rounded-full animate-spin mb-4;
+    @apply w-10 h-10 border-2 border-gray-200 border-t-goodierun-primary rounded-full animate-spin mb-4;
   }
 }
 
