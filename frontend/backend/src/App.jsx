@@ -1,12 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
+import PrivateRoute from './components/Auth/PrivateRoute';
 
 // Lazy load components for better performance
+const Login = React.lazy(() => import('./pages/Auth/Login'));
 const Dashboard = React.lazy(() => import('./pages/Dashboard/Dashboard'));
 const WarehouseManagement = React.lazy(() => import('./pages/ERP/WarehouseManagement'));
 const ContractManagement = React.lazy(() => import('./pages/ERP/ContractManagement'));
-const PointOfSale = React.lazy(() => import('./pages/POS/PointOfSale'));
 const UserManagement = React.lazy(() => import('./pages/Users/UserManagement'));
 const RoleManagement = React.lazy(() => import('./pages/Users/RoleManagement'));
 const Settings = React.lazy(() => import('./pages/Settings/Settings'));
@@ -24,11 +25,21 @@ const App = () => {
         <Router>
             <React.Suspense fallback={<LoadingFallback />}>
                 <Routes>
-                    {/* Redirect root to dashboard */}
-                    <Route path="/" element={<Navigate to="/backend/dashboard" replace />} />
+                    {/* Public routes */}
+                    <Route path="/login" element={<Login />} />
                     
-                    {/* Backend routes */}
-                    <Route path="/backend" element={<Layout />}>
+                    {/* Redirect root to login if not authenticated */}
+                    <Route path="/" element={<Navigate to="/login" replace />} />
+                    
+                    {/* Protected backend routes */}
+                    <Route
+                        path="/backend"
+                        element={
+                            <PrivateRoute>
+                                <Layout />
+                            </PrivateRoute>
+                        }
+                    >
                         <Route path="dashboard" element={<Dashboard />} />
                         
                         {/* ERP Routes */}
@@ -41,9 +52,6 @@ const App = () => {
                             <Route path="contracts/create" element={<ContractManagement mode="create" />} />
                             <Route path="contracts/list" element={<ContractManagement mode="list" />} />
                         </Route>
-                        
-                        {/* POS Route */}
-                        <Route path="pos" element={<PointOfSale />} />
                         
                         {/* User Management Routes */}
                         <Route path="users">
