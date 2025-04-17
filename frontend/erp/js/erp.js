@@ -1,3 +1,51 @@
+// User Permissions and Role Management
+let currentUser = null;
+const requiredPermissions = {
+    'Contract Management': ['CONTRACT_READ', 'CONTRACT_WRITE'],
+    'Warehouse Management': ['WAREHOUSE_READ', 'WAREHOUSE_WRITE'],
+    'Procurement': ['PROCUREMENT_READ', 'PROCUREMENT_WRITE'],
+    'Inventory Control': ['INVENTORY_READ', 'INVENTORY_WRITE']
+};
+
+// Authentication Check
+function checkAuth() {
+    const token = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    
+    if (!token || !storedUser) {
+        window.location.href = '/login.html';
+        return;
+    }
+
+    try {
+        // Use stored user data
+        currentUser = JSON.parse(storedUser);
+        
+        // Update user info in the header
+        const userSpan = document.querySelector('.text-gray-500');
+        if (userSpan && currentUser.firstName && currentUser.lastName) {
+            userSpan.textContent = `Welcome, ${currentUser.firstName} ${currentUser.lastName}`;
+        }
+
+        // Initialize UI based on permissions
+        initializeUIBasedOnPermissions();
+    } catch (error) {
+        console.error('Auth check failed:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login.html';
+    }
+}
+
+// Permission Check
+function hasPermission(requiredPermissions) {
+    if (!currentUser || !currentUser.permissions) return false;
+    if (currentUser.roles.includes('ADMIN')) return true;
+    return requiredPermissions.some(permission => 
+        currentUser.permissions.includes(permission)
+    );
+}
+
 // Tab Management
 function initializeTabs() {
     const tabsMap = {
@@ -22,6 +70,12 @@ function initializeTabs() {
 
                 if (!sectionId) {
                     console.error('No matching section for tab:', tabText);
+                    return;
+                }
+
+                // Check permissions before switching tabs
+                if (!hasPermission(requiredPermissions[tabText])) {
+                    showToast('Access denied: Insufficient permissions', 'error');
                     return;
                 }
 
@@ -68,15 +122,25 @@ function initializeForms() {
             if (!form) return;
 
             try {
+                const formType = form.getAttribute('data-form-type');
+                // Check write permissions
+                if (!hasPermission([`${formType.toUpperCase()}_WRITE`])) {
+                    showToast('Access denied: Insufficient permissions', 'error');
+                    return;
+                }
+
                 // Toggle form visibility
                 form.classList.toggle('hidden');
                 
                 // Update button text
                 const isFormVisible = !form.classList.contains('hidden');
-                const formType = form.getAttribute('data-form-type');
                 button.innerHTML = isFormVisible ? 
                     '<i class="fas fa-times mr-2"></i>Cancel' : 
                     `<i class="fas fa-plus mr-2"></i>New ${formType}`;
+
+                if (isFormVisible && formType === 'PurchaseOrder') {
+                    initializeItemSelection();
+                }
             } catch (error) {
                 console.error('Error toggling form:', error);
                 showToast('Error toggling form', 'error');
@@ -114,9 +178,15 @@ function initializeForms() {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
+                const formType = form.getAttribute('data-form-type');
+                // Check write permissions
+                if (!hasPermission([`${formType.toUpperCase()}_WRITE`])) {
+                    showToast('Access denied: Insufficient permissions', 'error');
+                    return;
+                }
+
                 const formData = new FormData(form);
                 const data = Object.fromEntries(formData.entries());
-                const formType = form.getAttribute('data-form-type');
                 
                 // Here you would typically make an API call
                 console.log(`${formType} form submitted:`, data);
@@ -140,15 +210,102 @@ function initializeForms() {
     });
 }
 
+// Item Selection Management
+function initializeItemSelection() {
+    const itemsContainer = document.querySelector('form[data-form-type="PurchaseOrder"] .space-y-2');
+    if (!itemsContainer) {
+        console.error('Items container not found');
+        return;
+    }
+
+    function setupItemRow(row) {
+        const select = row.querySelector('select');
+        const quantityInput = row.querySelector('input[name="quantity"]');
+        const priceInput = row.querySelector('input[name="price"]');
+        const deleteButton = row.querySelector('.text-red-600');
+
+        if (select) {
+            select.addEventListener('change', () => {
+                const isSelected = select.value !== '';
+                if (quantityInput) quantityInput.disabled = !isSelected;
+                if (priceInput) priceInput.disabled = !isSelected;
+            });
+        }
+
+        // Handle delete button
+        if (deleteButton) {
+            deleteButton.addEventListener('click', () => {
+                const allRows = itemsContainer.querySelectorAll('.flex.items-center');
+                if (allRows.length > 1) {
+                    row.remove();
+                } else {
+                    // Reset the last row instead of removing it
+                    if (select) select.value = '';
+                    if (quantityInput) {
+                        quantityInput.value = '';
+                        quantityInput.disabled = true;
+                    }
+                    if (priceInput) {
+                        priceInput.value = '';
+                        priceInput.disabled = true;
+                    }
+                }
+            });
+        }
+    }
+
+    // Set up existing rows
+    const existingRows = itemsContainer.querySelectorAll('.flex.items-center');
+    existingRows.forEach(setupItemRow);
+
+    // Handle "Add Item" button
+    const addItemButton = itemsContainer.parentElement.querySelector('button.text-indigo-600');
+    if (addItemButton) {
+        addItemButton.addEventListener('click', () => {
+            try {
+                const firstRow = itemsContainer.querySelector('.flex.items-center');
+                if (firstRow) {
+                    const newRow = firstRow.cloneNode(true);
+                    
+                    // Reset values
+                    const select = newRow.querySelector('select');
+                    const inputs = newRow.querySelectorAll('input');
+                    if (select) select.value = '';
+                    inputs.forEach(input => {
+                        input.value = '';
+                        input.disabled = true;
+                    });
+
+                    // Add to container and set up event handlers
+                    itemsContainer.appendChild(newRow);
+                    setupItemRow(newRow);
+                }
+            } catch (error) {
+                console.error('Error adding item row:', error);
+                showToast('Error adding item', 'error');
+            }
+        });
+    }
+}
+
 // Delete Button Management
 function initializeDeleteButtons() {
     const deleteButtons = document.querySelectorAll('.delete-btn');
     deleteButtons.forEach(btn => {
         btn.addEventListener('click', async () => {
             try {
+                const section = btn.closest('.management-section');
+                if (!section) return;
+
+                const formType = section.querySelector('form')?.getAttribute('data-form-type');
+                if (!formType || !hasPermission([`${formType.toUpperCase()}_WRITE`])) {
+                    showToast('Access denied: Insufficient permissions', 'error');
+                    return;
+                }
+
                 if (confirm('Are you sure you want to delete this item?')) {
                     // Here you would typically make an API call
-                    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 500));
                     showToast('Item deleted successfully!');
                 }
             } catch (error) {
@@ -217,9 +374,22 @@ function initializeDateFields() {
     }
 }
 
+// Initialize UI based on user permissions
+function initializeUIBasedOnPermissions() {
+    const tabs = document.querySelectorAll('nav button');
+    tabs.forEach(tab => {
+        const tabText = tab.textContent.trim();
+        const permissions = requiredPermissions[tabText];
+        if (!hasPermission(permissions)) {
+            tab.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+    });
+}
+
 // Initialize all components when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     try {
+        checkAuth();
         initializeTabs();
         initializeForms();
         initializeDeleteButtons();
