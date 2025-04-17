@@ -2,91 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply m-0 font-sans antialiased bg-gray-50;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  code {
-    @apply font-mono;
-  }
-
-  #root {
-    @apply min-h-screen flex;
-  }
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@layer components {
-  .loading-fallback {
-    @apply flex flex-col items-center justify-center min-h-screen w-full;
-  }
-
-  .spinner {
-    @apply w-10 h-10 border-2 border-gray-200 border-t-goodierun-primary rounded-full animate-spin mb-4;
-  }
-}
-
-/* Toast animations */
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideOut {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-}
-
-.toast-enter {
-  animation: slideIn 0.3s ease forwards;
-}
-
-.toast-exit {
-  animation: slideOut 0.3s ease forwards;
-}
-
-/* Transitions */
-.fade-enter {
-  @apply opacity-0 translate-y-2;
-}
-
-.fade-enter-active {
-  @apply opacity-100 translate-y-0 transition-all duration-300;
-}
-
-.fade-exit {
-  @apply opacity-100 translate-y-0;
-}
-
-.fade-exit-active {
-  @apply opacity-0 translate-y-2 transition-all duration-300;
-}
-
-/* Scrollbar styling */
-@layer utilities {
-  ::-webkit-scrollbar {
-    @apply w-1.5 h-1.5;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-gray-100 rounded;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-gray-400 rounded hover:bg-gray-500;
-  }
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
 }
