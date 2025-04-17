@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoodieRun 2.0 - ERP Module</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -26,7 +37,7 @@
                         <a href="#" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             ERP Module
                         </a>
-                        <a href="../admin/dashboard.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="/admin/dashboard.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Admin
                         </a>
                     </div>
@@ -45,54 +56,6 @@
 
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <!-- Stats Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
-                        <i class="fas fa-file-contract text-xl"></i>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm text-gray-500">Active Contracts</p>
-                        <p class="text-lg font-semibold">156</p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-green-100 text-green-600">
-                        <i class="fas fa-warehouse text-xl"></i>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm text-gray-500">Warehouse Stock</p>
-                        <p class="text-lg font-semibold">12,345</p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
-                        <i class="fas fa-shopping-cart text-xl"></i>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm text-gray-500">Pending Orders</p>
-                        <p class="text-lg font-semibold">48</p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
-                        <i class="fas fa-truck text-xl"></i>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm text-gray-500">Shipments Today</p>
-                        <p class="text-lg font-semibold">23</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Module Navigation -->
         <div class="mb-6 border-b border-gray-200">
             <nav class="-mb-px flex space-x-8" aria-label="Tabs">
@@ -111,447 +74,21 @@
             </nav>
         </div>
 
-        <!-- Contract Management Section -->
+        <!-- Content Sections -->
         <div id="contractSection" class="management-section">
-            <div class="bg-white shadow rounded-lg p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-lg font-semibold text-gray-900">Contracts</h2>
-                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <i class="fas fa-plus mr-2"></i>New Contract
-                    </button>
-                </div>
-
-                <!-- Contract Form -->
-                <form class="space-y-6 mb-8 hidden" data-form-type="Contract">
-                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                        <div>
-                            <label for="contractName" class="block text-sm font-medium text-gray-700">Contract Name</label>
-                            <input type="text" id="contractName" name="contractName" required 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label for="contractType" class="block text-sm font-medium text-gray-700">Contract Type</label>
-                            <select id="contractType" name="contractType" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="vendor">Vendor Contract</option>
-                                <option value="customer">Customer Contract</option>
-                                <option value="partner">Partner Agreement</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date</label>
-                            <input type="date" id="startDate" name="startDate" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label for="endDate" class="block text-sm font-medium text-gray-700">End Date</label>
-                            <input type="date" id="endDate" name="endDate" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                        <div class="sm:col-span-2">
-                            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                            <textarea id="description" name="description" rows="3"
-                                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
-                        </div>
-                    </div>
-                    <div class="flex justify-end space-x-3">
-                        <button type="button" class="cancel-form-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">
-                            Cancel
-                        </button>
-                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
-                            Save Contract
-                        </button>
-                    </div>
-                </form>
-
-                <!-- Contracts Table -->
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contract Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">Supply Agreement 2024</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">Vendor Contract</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">Jan 1, 2024</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">Dec 31, 2024</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        Active
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-indigo-600 hover:text-indigo-900 mr-3">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-900 delete-btn">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <!-- Contract Management content -->
         </div>
 
-        <!-- Warehouse Management Section -->
         <div id="warehouseSection" class="management-section hidden">
-            <div class="bg-white shadow rounded-lg p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-lg font-semibold text-gray-900">Warehouse Management</h2>
-                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <i class="fas fa-plus mr-2"></i>Add Item
-                    </button>
-                </div>
-
-                <!-- Warehouse Item Form -->
-                <form class="space-y-6 mb-8 hidden" data-form-type="WarehouseItem">
-                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                        <div>
-                            <label for="itemName" class="block text-sm font-medium text-gray-700">Item Name</label>
-                            <input type="text" id="itemName" name="itemName" required 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label for="itemSKU" class="block text-sm font-medium text-gray-700">SKU</label>
-                            <input type="text" id="itemSKU" name="itemSKU" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
-                            <input type="number" id="quantity" name="quantity" min="0" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
-                            <select id="location" name="location" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="A1">Warehouse A - Section 1</option>
-                                <option value="A2">Warehouse A - Section 2</option>
-                                <option value="B1">Warehouse B - Section 1</option>
-                                <option value="B2">Warehouse B - Section 2</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-                            <select id="category" name="category" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="raw">Raw Materials</option>
-                                <option value="finished">Finished Goods</option>
-                                <option value="packaging">Packaging Materials</option>
-                                <option value="spare">Spare Parts</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="reorderPoint" class="block text-sm font-medium text-gray-700">Reorder Point</label>
-                            <input type="number" id="reorderPoint" name="reorderPoint" min="0" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                    </div>
-                    <div class="flex justify-end space-x-3">
-                        <button type="button" class="cancel-form-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">
-                            Cancel
-                        </button>
-                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
-                            Save Item
-                        </button>
-                    </div>
-                </form>
-
-                <!-- Inventory Table -->
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">Raw Material A</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">RM-001</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">500</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">Warehouse A - Section 1</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        In Stock
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-indigo-600 hover:text-indigo-900 mr-3">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-900 delete-btn">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h3 class="text-sm font-medium text-gray-900 mb-3">Quick Actions</h3>
-                        <div class="space-y-2">
-                            <button class="w-full bg-white text-left px-4 py-2 rounded border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <i class="fas fa-truck-loading mr-2 text-gray-500"></i>
-                                Receive Shipment
-                            </button>
-                            <button class="w-full bg-white text-left px-4 py-2 rounded border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <i class="fas fa-box mr-2 text-gray-500"></i>
-                                Stock Transfer
-                            </button>
-                            <button class="w-full bg-white text-left px-4 py-2 rounded border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <i class="fas fa-clipboard-check mr-2 text-gray-500"></i>
-                                Inventory Count
-                            </button>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h3 class="text-sm font-medium text-gray-900 mb-3">Alerts</h3>
-                        <div class="space-y-2">
-                            <div class="bg-yellow-50 p-3 rounded-lg">
-                                <div class="flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-exclamation-triangle text-yellow-400"></i>
-                                    </div>
-                                    <div class="ml-3">
-                                        <h3 class="text-sm font-medium text-yellow-800">Low Stock Alert</h3>
-                                        <div class="mt-2 text-sm text-yellow-700">
-                                            <p>3 items are below reorder point</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-red-50 p-3 rounded-lg">
-                                <div class="flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-exclamation-circle text-red-400"></i>
-                                    </div>
-                                    <div class="ml-3">
-                                        <h3 class="text-sm font-medium text-red-800">Stock Out</h3>
-                                        <div class="mt-2 text-sm text-red-700">
-                                            <p>1 item is out of stock</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Warehouse Management content -->
         </div>
 
-        <!-- Procurement Section -->
         <div id="procurementSection" class="management-section hidden">
-            <div class="bg-white shadow rounded-lg p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-lg font-semibold text-gray-900">Purchase Orders</h2>
-                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <i class="fas fa-plus mr-2"></i>New Purchase Order
-                    </button>
-                </div>
-
-                <!-- Purchase Order Form -->
-                <form class="space-y-6 mb-8 hidden" data-form-type="PurchaseOrder">
-                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                        <div>
-                            <label for="poNumber" class="block text-sm font-medium text-gray-700">PO Number</label>
-                            <input type="text" id="poNumber" name="poNumber" required 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label for="supplier" class="block text-sm font-medium text-gray-700">Supplier</label>
-                            <select id="supplier" name="supplier" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">Select Supplier</option>
-                                <option value="sup1">Supplier A</option>
-                                <option value="sup2">Supplier B</option>
-                                <option value="sup3">Supplier C</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="orderDate" class="block text-sm font-medium text-gray-700">Order Date</label>
-                            <input type="date" id="orderDate" name="orderDate" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label for="deliveryDate" class="block text-sm font-medium text-gray-700">Expected Delivery</label>
-                            <input type="date" id="deliveryDate" name="deliveryDate" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                        <div class="sm:col-span-2">
-                            <label for="items" class="block text-sm font-medium text-gray-700">Items</label>
-                            <div class="mt-1 space-y-2">
-                                <div class="flex items-center space-x-2">
-                                    <select class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                        <option value="">Select Item</option>
-                                        <option value="item1">Raw Material A</option>
-                                        <option value="item2">Raw Material B</option>
-                                    </select>
-                                    <input type="number" placeholder="Quantity" min="1"
-                                           class="w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <input type="number" placeholder="Price" min="0"
-                                           class="w-32 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <button type="button" class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <button type="button" class="mt-2 text-sm text-indigo-600 hover:text-indigo-800">
-                                <i class="fas fa-plus mr-1"></i>Add Item
-                            </button>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
-                            <textarea id="notes" name="notes" rows="3"
-                                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
-                        </div>
-                    </div>
-                    <div class="flex justify-end space-x-3">
-                        <button type="button" class="cancel-form-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">
-                            Cancel
-                        </button>
-                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
-                            Create Purchase Order
-                        </button>
-                    </div>
-                </form>
-
-                <!-- Purchase Orders Table -->
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PO Number</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">PO-2024-001</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">Supplier A</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">Jan 15, 2024</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">Jan 30, 2024</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                        Pending
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-indigo-600 hover:text-indigo-900 mr-3">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-900 delete-btn">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h3 class="text-sm font-medium text-gray-900 mb-3">Quick Actions</h3>
-                        <div class="space-y-2">
-                            <button class="w-full bg-white text-left px-4 py-2 rounded border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <i class="fas fa-file-invoice mr-2 text-gray-500"></i>
-                                Generate PO Report
-                            </button>
-                            <button class="w-full bg-white text-left px-4 py-2 rounded border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <i class="fas fa-user-tie mr-2 text-gray-500"></i>
-                                Manage Suppliers
-                            </button>
-                            <button class="w-full bg-white text-left px-4 py-2 rounded border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <i class="fas fa-chart-line mr-2 text-gray-500"></i>
-                                View Analytics
-                            </button>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h3 class="text-sm font-medium text-gray-900 mb-3">Alerts</h3>
-                        <div class="space-y-2">
-                            <div class="bg-yellow-50 p-3 rounded-lg">
-                                <div class="flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-clock text-yellow-400"></i>
-                                    </div>
-                                    <div class="ml-3">
-                                        <h3 class="text-sm font-medium text-yellow-800">Pending Approvals</h3>
-                                        <div class="mt-2 text-sm text-yellow-700">
-                                            <p>2 purchase orders awaiting approval</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-red-50 p-3 rounded-lg">
-                                <div class="flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-exclamation-circle text-red-400"></i>
-                                    </div>
-                                    <div class="ml-3">
-                                        <h3 class="text-sm font-medium text-red-800">Overdue Deliveries</h3>
-                                        <div class="mt-2 text-sm text-red-700">
-                                            <p>1 order past expected delivery date</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Procurement content -->
         </div>
 
-        <!-- Inventory Control Section -->
         <div id="inventorySection" class="management-section hidden">
-            <!-- Content will be added in the next iteration -->
+            <!-- Inventory Control content -->
         </div>
     </div>
 
