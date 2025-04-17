@@ -1,12 +1,93 @@
+// User Management
+let currentUser = null;
+const requiredPermissions = {
+    'User Management': ['USER_READ', 'USER_WRITE'],
+    'Role Management': ['ROLE_READ', 'ROLE_WRITE'],
+    'Permissions': ['PERMISSION_READ', 'PERMISSION_WRITE'],
+    'System Settings': ['SETTINGS_READ', 'SETTINGS_WRITE']
+};
+
+// Authentication Check
+async function checkAuth() {
+    try {
+        const token = localStorage.getItem('token');
+        const storedUser = localStorage.getItem('user');
+        
+        if (!token || !storedUser) {
+            redirectToLogin();
+            return;
+        }
+
+        // Use stored user data
+        currentUser = JSON.parse(storedUser);
+
+        // Check if user is admin
+        if (!currentUser.roles.includes('ADMIN')) {
+            redirectToLogin();
+            return;
+        }
+        
+        // Update user info in the header
+        const userSpan = document.querySelector('.text-gray-500');
+        if (userSpan && currentUser.firstName && currentUser.lastName) {
+            userSpan.textContent = `Welcome, ${currentUser.firstName} ${currentUser.lastName}`;
+        }
+
+        // Initialize UI based on permissions
+        initializeUIBasedOnPermissions();
+        initializeLogout();
+    } catch (error) {
+        console.error('Auth check failed:', error);
+        redirectToLogin();
+    }
+}
+
+function redirectToLogin() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login.html';
+}
+
+// Initialize Logout
+function initializeLogout() {
+    const logoutButton = document.querySelector('button[onclick*="localStorage.clear()"]');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent the inline onclick from firing
+            try {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                showToast('Logging out...', 'success');
+                setTimeout(() => {
+                    window.location.href = '/login.html';
+                }, 1000);
+            } catch (error) {
+                console.error('Error during logout:', error);
+                showToast('Error during logout', 'error');
+            }
+        });
+    }
+}
+
+// Permission Check
+function hasPermission(requiredPermissions) {
+    if (!currentUser || !currentUser.permissions) return false;
+    if (currentUser.roles.includes('ADMIN')) return true;
+    return requiredPermissions.some(permission => 
+        currentUser.permissions.includes(permission)
+    );
+}
+
 // Tab Management
 function initializeTabs() {
     const tabsMap = {
-        'User Management': 'userSection',
-        'Role Management': 'roleSection',
-        'Site Management': 'siteSection'
+        'User Management': 'userManagementSection',
+        'Role Management': 'roleManagementSection',
+        'Permissions': 'permissionsSection',
+        'System Settings': 'systemSettingsSection'
     };
 
-    const tabs = document.querySelectorAll('nav button');
+    const tabs = document.querySelectorAll('nav[aria-label="Tabs"] button');
     
     if (!tabs.length) {
         console.error('Tabs not found');
@@ -21,6 +102,12 @@ function initializeTabs() {
 
                 if (!sectionId) {
                     console.error('No matching section for tab:', tabText);
+                    return;
+                }
+
+                // Check permissions before switching tabs
+                if (!hasPermission(requiredPermissions[tabText])) {
+                    showToast('Access denied: Insufficient permissions', 'error');
                     return;
                 }
 
@@ -51,112 +138,62 @@ function initializeTabs() {
     });
 }
 
-// Form Management
-function initializeForms() {
-    const forms = document.querySelectorAll('form[data-form-type]');
-    const addButtons = document.querySelectorAll('button[class*="bg-indigo-600"]:not([type="submit"])');
-    const cancelButtons = document.querySelectorAll('.cancel-form-btn');
-
-    // Add button click handlers
-    addButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const section = button.closest('.management-section');
-            if (!section) return;
-
-            const form = section.querySelector('form');
-            if (!form) return;
-
-            try {
-                // Toggle form visibility
-                form.classList.toggle('hidden');
-                
-                // Update button text
-                const isFormVisible = !form.classList.contains('hidden');
-                button.innerHTML = isFormVisible ? 
-                    '<i class="fas fa-times mr-2"></i>Cancel' : 
-                    `<i class="fas fa-plus mr-2"></i>Add ${form.getAttribute('data-form-type')}`;
-            } catch (error) {
-                console.error('Error toggling form:', error);
-                showToast('Error toggling form', 'error');
-            }
-        });
-    });
-
-    // Cancel button click handlers
-    cancelButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const form = button.closest('form');
-            if (!form) return;
-
-            try {
-                // Reset and hide form
-                form.reset();
-                form.classList.add('hidden');
-
-                // Reset add button text
-                const section = form.closest('.management-section');
-                const addButton = section?.querySelector('button[class*="bg-indigo-600"]:not([type="submit"])');
-                if (addButton) {
-                    addButton.innerHTML = `<i class="fas fa-plus mr-2"></i>Add ${form.getAttribute('data-form-type')}`;
-                }
-            } catch (error) {
-                console.error('Error canceling form:', error);
-                showToast('Error canceling form', 'error');
-            }
-        });
-    });
-
-    // Form submit handlers
-    forms.forEach(form => {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            try {
-                const formData = new FormData(form);
-                const data = Object.fromEntries(formData.entries());
-                
-                // Handle multiple checkbox values
-                if (formData.getAll('permissions[]').length > 0) {
-                    data.permissions = formData.getAll('permissions[]');
-                }
-
-                const formType = form.getAttribute('data-form-type');
-                
-                // Here you would typically make an API call
-                console.log(`${formType} form submitted:`, data);
-                
-                // Show success message and reset form
-                showToast(`${formType} saved successfully!`);
-                form.reset();
-                form.classList.add('hidden');
-
-                // Reset add button text
-                const section = form.closest('.management-section');
-                const addButton = section?.querySelector('button[class*="bg-indigo-600"]:not([type="submit"])');
-                if (addButton) {
-                    addButton.innerHTML = `<i class="fas fa-plus mr-2"></i>Add ${formType}`;
-                }
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                showToast('Error saving data', 'error');
-            }
-        });
-    });
-}
-
 // Delete Button Management
 function initializeDeleteButtons() {
-    const deleteButtons = document.querySelectorAll('.delete-btn');
+    const deleteButtons = document.querySelectorAll('.text-red-600');
     deleteButtons.forEach(btn => {
         btn.addEventListener('click', async () => {
             try {
+                const section = btn.closest('.management-section');
+                if (!section) return;
+
+                const sectionId = section.id;
+                const permission = sectionId === 'userManagementSection' ? 'USER_WRITE' :
+                                 sectionId === 'roleManagementSection' ? 'ROLE_WRITE' :
+                                 'PERMISSION_WRITE';
+
+                if (!hasPermission([permission])) {
+                    showToast('Access denied: Insufficient permissions', 'error');
+                    return;
+                }
+
                 if (confirm('Are you sure you want to delete this item?')) {
                     // Here you would typically make an API call
-                    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 500));
                     showToast('Item deleted successfully!');
                 }
             } catch (error) {
                 console.error('Error deleting item:', error);
                 showToast('Error deleting item', 'error');
+            }
+        });
+    });
+}
+
+// Edit Button Management
+function initializeEditButtons() {
+    const editButtons = document.querySelectorAll('.text-indigo-600');
+    editButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            try {
+                const section = btn.closest('.management-section');
+                if (!section) return;
+
+                const sectionId = section.id;
+                const permission = sectionId === 'userManagementSection' ? 'USER_WRITE' :
+                                 sectionId === 'roleManagementSection' ? 'ROLE_WRITE' :
+                                 'PERMISSION_WRITE';
+
+                if (!hasPermission([permission])) {
+                    showToast('Access denied: Insufficient permissions', 'error');
+                    return;
+                }
+
+                // Here you would typically show an edit form or modal
+                showToast('Edit functionality coming soon!');
+            } catch (error) {
+                console.error('Error initializing edit:', error);
+                showToast('Error initializing edit', 'error');
             }
         });
     });
@@ -196,14 +233,27 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
+// Initialize UI based on user permissions
+function initializeUIBasedOnPermissions() {
+    const tabs = document.querySelectorAll('nav[aria-label="Tabs"] button');
+    tabs.forEach(tab => {
+        const tabText = tab.textContent.trim();
+        const permissions = requiredPermissions[tabText];
+        if (!hasPermission(permissions)) {
+            tab.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+    });
+}
+
 // Initialize all components when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     try {
+        checkAuth();
         initializeTabs();
-        initializeForms();
         initializeDeleteButtons();
+        initializeEditButtons();
     } catch (error) {
-        console.error('Error initializing admin dashboard:', error);
-        showToast('Error initializing dashboard', 'error');
+        console.error('Error initializing admin module:', error);
+        showToast('Error initializing module', 'error');
     }
 });
