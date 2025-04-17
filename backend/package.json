@@ -13,7 +13,9 @@
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
     "migrate": "ts-node src/database/migrate.ts",
-    "seed": "ts-node src/database/seed.ts"
+    "seed": "ts-node src/database/seed.ts",
+    "db:setup": "ts-node src/database/setup.ts",
+    "db:init": "npm run db:setup && npm run migrate && npm run seed"
   },
   "keywords": [
     "enterprise",
