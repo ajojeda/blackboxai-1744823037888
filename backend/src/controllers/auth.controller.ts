@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
-import { User } from '../models/User';
+import User from '../models/User';
 import { AppError } from '../middleware/errorHandler';
 import { generateToken } from '../middleware/auth';
 import logger from '../utils/logger';
@@ -21,7 +21,10 @@ export const validateRegister = [
     .matches(/[A-Z]/)
     .withMessage('Password must contain an uppercase letter'),
   body('siteId').notEmpty().withMessage('Site ID is required'),
+  body('departmentId').notEmpty().withMessage('Department ID is required'),
   body('roles').isArray().withMessage('Roles must be an array'),
+  body('firstName').notEmpty().withMessage('First name is required'),
+  body('lastName').notEmpty().withMessage('Last name is required'),
 ];
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
@@ -45,7 +48,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     }
 
     // Validate password
-    const isValid = await User.validatePassword(email, password);
+    const isValid = await User.validatePassword(user, password);
     if (!isValid) {
       throw new AppError('Invalid credentials', 401);
     }
@@ -97,7 +100,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       throw new AppError('User already exists', 400);
     }
 
-    // Create new user
+    // Create new user with required properties
     const user = await User.create({
       username,
       email,
@@ -105,7 +108,9 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       firstName,
       lastName,
       siteId,
-      roles
+      roles,
+      isActive: true, // Set default value for new users
+      departmentId: req.body.departmentId || 'DEFAULT' // Use provided departmentId or default
     });
 
     logger.info('New user registered', {
