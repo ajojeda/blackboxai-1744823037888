@@ -1,46 +1,43 @@
 import React from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';
-import './Layout.css';
 
 const Layout = () => {
-    // Check if user is authenticated and has necessary permissions
-    const user = JSON.parse(localStorage.getItem('user'));
-    const isAuthenticated = !!localStorage.getItem('token');
-
-    if (!isAuthenticated) {
-        return <Navigate to="/login" replace />;
-    }
-
     return (
-        <div className="layout">
+        <div className="flex min-h-screen bg-gray-50">
+            {/* Sidebar */}
             <Sidebar />
-            <main className="main-content">
-                <header className="header">
-                    <div className="header-content">
-                        <div className="user-info">
-                            <span className="user-name">
-                                {user?.firstName} {user?.lastName}
-                            </span>
-                            <span className="user-role">
-                                {user?.isTopLevelAdmin ? 'Administrator' : user?.roles?.[0]}
-                            </span>
-                        </div>
-                        <div className="header-actions">
-                            <button 
-                                className="logout-button"
-                                onClick={() => {
-                                    localStorage.clear();
-                                    window.location.href = '/login';
-                                }}
-                            >
-                                <i className="fas fa-sign-out-alt"></i>
-                                <span>Logout</span>
-                            </button>
+            
+            {/* Main Content */}
+            <main className="flex-1 ml-16 lg:ml-64 min-h-screen bg-gray-50">
+                {/* Header */}
+                <header className="bg-white shadow-sm">
+                    <div className="px-4 sm:px-6 lg:px-8 py-4">
+                        <div className="flex items-center justify-between">
+                            <h1 className="text-2xl font-semibold text-goodierun-primary">
+                                GoodieRun Backend
+                            </h1>
+                            <div className="flex items-center space-x-4">
+                                <span className="text-sm text-goodierun-gray">
+                                    Welcome, {JSON.parse(localStorage.getItem('user'))?.firstName || 'User'}
+                                </span>
+                                <button
+                                    onClick={() => {
+                                        localStorage.removeItem('token');
+                                        localStorage.removeItem('user');
+                                        window.location.href = '/login';
+                                    }}
+                                    className="px-4 py-2 text-sm font-medium text-white bg-goodierun-primary rounded-md hover:bg-goodierun-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-goodierun-primary"
+                                >
+                                    Logout
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </header>
-                <div className="content">
+
+                {/* Page Content */}
+                <div className="px-4 sm:px-6 lg:px-8 py-8">
                     <Outlet />
                 </div>
             </main>
