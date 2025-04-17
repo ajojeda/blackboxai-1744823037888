@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faChartLine, faWarehouse, faFileContract, faShoppingCart,
-    faUsers, faUserShield, faCog, faChevronLeft, faChevronRight,
-    faPlus, faList
+    faChartLine, faWarehouse, faShoppingCart,
+    faUsers, faCog, faChevronLeft, faChevronRight,
+    faPlus, faList, faBars, faSearch, faChevronDown
 } from '@fortawesome/free-solid-svg-icons';
-import './Sidebar.css';
 
 const Sidebar = () => {
     const [isExpanded, setIsExpanded] = useState(() => {
@@ -15,6 +14,7 @@ const Sidebar = () => {
     });
     
     const [activeSection, setActiveSection] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
     const [userPermissions, setUserPermissions] = useState([]);
     const location = useLocation();
 
@@ -75,13 +75,6 @@ const Sidebar = () => {
             ]
         },
         {
-            id: 'pos',
-            label: 'Point of Sale',
-            icon: faShoppingCart,
-            permission: 'POS_ACCESS',
-            path: '/backend/pos'
-        },
-        {
             id: 'users',
             label: 'User Management',
             icon: faUsers,
@@ -118,69 +111,98 @@ const Sidebar = () => {
         }
     ];
 
-    const handleMouseEnter = (sectionId) => {
-        setActiveSection(sectionId);
-    };
+    const filteredItems = navigationItems.filter(item => {
+        const matchesSearch = item.label.toLowerCase().includes(searchTerm.toLowerCase());
+        const hasSubItemMatch = item.subItems?.some(subItem => 
+            subItem.label.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        return matchesSearch || hasSubItemMatch;
+    });
 
-    const handleMouseLeave = () => {
-        setActiveSection(null);
+    const toggleSection = (sectionId) => {
+        setActiveSection(activeSection === sectionId ? null : sectionId);
     };
 
     return (
         <div 
-            className={`sidebar ${isExpanded ? 'expanded' : 'collapsed'}`}
-            onMouseLeave={handleMouseLeave}
+            className={`sidebar fixed top-0 left-0 h-full bg-white shadow-lg transition-all duration-300 ease-in-out
+                ${isExpanded ? 'w-64' : 'w-16'}`}
         >
+            {/* Hamburger Toggle */}
             <button 
-                className="toggle-button"
+                className="absolute right-0 top-4 transform translate-x-1/2 bg-goodierun-primary text-white rounded-full p-2 z-10"
                 onClick={() => setIsExpanded(!isExpanded)}
                 title={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
             >
                 <FontAwesomeIcon icon={isExpanded ? faChevronLeft : faChevronRight} />
             </button>
 
-            <div className="sidebar-content">
-                {navigationItems.map(item => {
+            {/* Search Bar - Only visible when expanded */}
+            {isExpanded && (
+                <div className="px-4 py-3 border-b border-gray-200">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Search menu..."
+                            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-goodierun-primary"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <FontAwesomeIcon 
+                            icon={faSearch} 
+                            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                        />
+                    </div>
+                </div>
+            )}
+
+            <div className="overflow-y-auto h-full pt-16">
+                {filteredItems.map(item => {
                     if (!hasPermission(item.permission)) return null;
 
                     return (
-                        <div 
-                            key={item.id}
-                            className="nav-item-container"
-                            onMouseEnter={() => handleMouseEnter(item.id)}
-                        >
-                            <Link
-                                to={item.path || '#'}
-                                className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+                        <div key={item.id} className="nav-item-container">
+                            <div
+                                className={`nav-item flex items-center px-4 py-3 cursor-pointer
+                                    ${location.pathname.startsWith(item.path) ? 'bg-goodierun-primary bg-opacity-10 text-goodierun-primary' : 'text-goodierun-gray hover:bg-gray-100'}
+                                    ${!isExpanded ? 'justify-center' : ''}`}
+                                onClick={() => item.subItems ? toggleSection(item.id) : null}
                             >
-                                <FontAwesomeIcon icon={item.icon} className="nav-icon" />
-                                {isExpanded && <span className="nav-label">{item.label}</span>}
-                            </Link>
+                                <FontAwesomeIcon icon={item.icon} className={`${isExpanded ? 'mr-3' : ''}`} />
+                                {isExpanded && (
+                                    <span className="flex-grow">{item.label}</span>
+                                )}
+                                {isExpanded && item.subItems && (
+                                    <FontAwesomeIcon 
+                                        icon={activeSection === item.id ? faChevronDown : faChevronRight}
+                                        className="ml-2"
+                                    />
+                                )}
+                            </div>
 
-                            {item.subItems && (activeSection === item.id || isExpanded) && (
-                                <div className={`submenu ${isExpanded ? 'expanded' : ''}`}>
+                            {item.subItems && activeSection === item.id && isExpanded && (
+                                <div className="submenu bg-gray-50">
                                     {item.subItems.map(subItem => {
                                         if (!hasPermission(subItem.permission)) return null;
 
                                         return (
-                                            <div key={subItem.id} className="submenu-item">
+                                            <div key={subItem.id} className="pl-12 pr-4 py-2">
                                                 <Link
                                                     to={subItem.path}
-                                                    className={`submenu-link ${location.pathname === subItem.path ? 'active' : ''}`}
+                                                    className={`block text-sm ${location.pathname === subItem.path ? 'text-goodierun-primary font-medium' : 'text-goodierun-gray hover:text-goodierun-primary'}`}
                                                 >
-                                                    <span>{subItem.label}</span>
+                                                    {subItem.label}
                                                 </Link>
                                                 {subItem.actions && (
-                                                    <div className="submenu-actions">
+                                                    <div className="mt-2 space-y-1">
                                                         {subItem.actions.map(action => (
                                                             <Link
                                                                 key={action.path}
                                                                 to={action.path}
-                                                                className="action-link"
-                                                                title={action.label}
+                                                                className="flex items-center text-xs text-goodierun-gray hover:text-goodierun-primary py-1"
                                                             >
-                                                                <FontAwesomeIcon icon={action.icon} />
-                                                                <span>{action.label}</span>
+                                                                <FontAwesomeIcon icon={action.icon} className="mr-2" />
+                                                                {action.label}
                                                             </Link>
                                                         ))}
                                                     </div>
